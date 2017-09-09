@@ -7,6 +7,6 @@ archivos.o: archivos.cpp
 des.o: des.cpp
 	g++ -c des.cpp -Wall
 clean:
-	rm main.o archivos.o des.o
+	rm main.o archivos.o des.o a.out
 run: a.out
 	./a.out
