@@ -42,7 +42,3 @@ namespace des{
     
     };
 }
-
-void des::hola(){
-    cout << "hola" << endl;
-}
