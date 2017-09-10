@@ -141,11 +141,12 @@ namespace des{
         bitset<64>* textoPlano : El texto plano a encriptar
     Regresa:
         bitset<64>* textoAuxiliar : El texto plano permutado.
-    Nota: En un bitset el primer elemento es el bit mas significativo,
-        por lo que en la mayoria de las funciones de este programa manejan
-        los elementos a la inversa a como uno lo razonaria de forma natural:
+    Nota: En un bitset el primer elemento no es el bit mas significativo
+        (bit mas a la izquierda), por lo que en la mayoria de las funciones 
+        de este programa manejan los elementos a la inversa a como uno lo 
+        razonaria de forma natural. 
         Ejemplo:
-            Si definimos un bitset miBitset 01101 
+            Si definimos un bitset<5> miBitset("01101") 
             miBitset[0] = 1, y no 0 como se pensaria.
             Asi entonces:
                 miBitset[1] = 0
