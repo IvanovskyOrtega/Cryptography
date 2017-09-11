@@ -47,3 +47,5 @@ namespace des{
     void iniciarEncriptacionDES(std::bitset<64>* textoPlano);
     void iniciarDecriptacionDES();
 }
+
+#endif
