@@ -635,7 +635,7 @@ bitset<64>* des::iniciarEncriptacionDES(bitset<64>* textoPlano, vector<bitset<48
     bitset<64>* LnRn = new (nothrow)bitset<64>();
     bitset<48>* bitsetAuxiliar = new (nothrow)bitset<48>();
     textoPlano = aplicarPermutacionInicial(textoPlano);
-    cout << "Inicia la encriptacion..." << endl;
+    //cout << "Inicia la encriptacion..." << endl;
     Ln = obtenerLn(textoPlano);
     Rn = obtenerRn(textoPlano);
     for(int i = 0 ; i < 16 ; i++){
@@ -649,9 +649,9 @@ bitset<64>* des::iniciarEncriptacionDES(bitset<64>* textoPlano, vector<bitset<48
     }
     LnRn = concatenarLnRn(Rn,Ln);
     LnRn = aplicarPermutacionInicialInversa(LnRn);
-    cout << "Termino la encriptacion..." << endl;
-    cout << "El texto encriptado es:" << endl;
-    cout << hex << (*LnRn).to_ulong() << endl;
+    //cout << "Termino la encriptacion..." << endl;
+    //cout << "El texto encriptado es:" << endl;
+    //cout << hex << (*LnRn).to_ulong() << endl;
     cout << dec; // Regresamos la impresion a decimal
     return LnRn;
 }
