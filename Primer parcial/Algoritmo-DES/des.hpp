@@ -44,7 +44,7 @@ namespace des{
     std::bitset<56>* concatenarCnDn(std::bitset<28>* Cn, std::bitset<28>* Dn);
     std::bitset<48>* aplicarPermutacionPC2(std::bitset<56>* CnDn);
     std::vector<std::bitset<48>*> generarProgramaDeLlaves();
-    std::bitset<64>* iniciarEncriptacionDES(std::bitset<64>* textoPlano);
+    std::bitset<64>* iniciarEncriptacionDES(std::bitset<64>* textoPlano, std::vector<std::bitset<48>*> programaDeLlaves);
     void iniciarDecriptacionDES();
 }
 
