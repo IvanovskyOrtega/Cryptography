@@ -628,16 +628,12 @@ vector<bitset<48>*> des::generarProgramaDeLlaves(){
     Regresa:
         bitset<64>* LnRn : Texto encriptado.
 **/
-bitset<64>* des::iniciarEncriptacionDES(bitset<64>* textoPlano){
-    vector<bitset<48>*> programaDeLlaves;
+bitset<64>* des::iniciarEncriptacionDES(bitset<64>* textoPlano, vector<bitset<48>*> programaDeLlaves){
     bitset<32>* Ln = new (nothrow)bitset<32>();
     bitset<32>* Rn = new (nothrow)bitset<32>();
     bitset<32>* RnAux = new (nothrow)bitset<32>();
     bitset<64>* LnRn = new (nothrow)bitset<64>();
     bitset<48>* bitsetAuxiliar = new (nothrow)bitset<48>();
-    cout << "Se generara el programa de llaves." << endl;
-    programaDeLlaves = generarProgramaDeLlaves();
-    cout << "Se genero el programa de llaves." << endl;
     textoPlano = aplicarPermutacionInicial(textoPlano);
     cout << "Inicia la encriptacion..." << endl;
     Ln = obtenerLn(textoPlano);
