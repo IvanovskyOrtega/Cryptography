@@ -14,13 +14,12 @@ int main (int argc, char* argv[]) {
 	}
 	cout << hex << (*entrada).to_ulong() << endl;
 	iniciarEncriptacionDES(entrada);
+	vector<bitset<64>*> bytesLeidos  = leerArchivo(argv[1]);
+	printf("Tamanio: %lu\n",tamanio);
+	escribirArchivo(bytesLeidos,"encriptado",tamanio);
 	return 0;
 	
 	/******Aqui se implementara algo para encriptar archivos.*******/
 
-	/*
-		bitset<MAX_SIZE>* bitsLeidos = new (nothrow)bitset<MAX_SIZE>();
-		bitsLeidos = leerArchivo(argv[1]);
-		escribirArchivo(bitsLeidos,"encriptado",tamanio);
-	*/
+	
 }

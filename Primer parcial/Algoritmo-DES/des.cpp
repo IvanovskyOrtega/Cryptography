@@ -654,4 +654,5 @@ void des::iniciarEncriptacionDES(bitset<64>* textoPlano){
     cout << "Termino la encriptacion..." << endl;
     cout << "El texto encriptado es:" << endl;
     cout << hex << (*LnRn).to_ulong() << endl;
+    cout << dec;
 }
