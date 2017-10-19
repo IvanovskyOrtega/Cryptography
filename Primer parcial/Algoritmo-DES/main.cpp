@@ -10,15 +10,18 @@ int main (int argc, char* argv[]) {
 		cout << "Archivo a encriptar: " << argv[1] << endl;
 		vector<bitset<64>*> bytesLeidos  = leerArchivo(argv[1]);
 		if(bytesLeidos.size() > 0){
+			vector<bitset<48>*> programaDeLlaves;
 			vector<bitset<64>*> encriptado;
 			bitset<64>* aux;
 			printf("Tamanio del archivo: %lu\n",tamanio);
+			cout << "Se generara el programa de llaves." << endl;
+			programaDeLlaves = generarProgramaDeLlaves();
+			cout << "Se genero el programa de llaves." << endl;
 			for(int i = 0 ; i < (int)bytesLeidos.size()-1 ; i++){
-				aux = iniciarEncriptacionDES(bytesLeidos[i]);
+				aux = iniciarEncriptacionDES(bytesLeidos[i], programaDeLlaves);
 				encriptado.reserve(1);
 				encriptado.push_back(new bitset<64>(*aux));
 				aux->reset();
-				cout << hex << (*aux).to_ulong() << endl;
 			}
 			encriptado.reserve(1);
 			encriptado.push_back(bytesLeidos[bytesLeidos.size()-1]);
