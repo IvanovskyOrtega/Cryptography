@@ -10,7 +10,6 @@ namespace archivos{
 vector<bitset<64>*> archivos::leerArchivo(string nombre){
 	size_t numeroDeBytesLeidos;
 	vector<bitset<64>*> binario;
-	char *aux;
 	bitset<64>* bytesLeidos = new (nothrow)bitset<64>();
 	try{
         ifstream input(nombre,std::ios::binary|std::ios::ate);
