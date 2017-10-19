@@ -625,8 +625,10 @@ vector<bitset<48>*> des::generarProgramaDeLlaves(){
     Esta funcion encripta texto plano usando el algoritmo DES.
     Recibe: 
         bitset<64>* textoPlano : Texto plano a encriptar.
+    Regresa:
+        bitset<64>* LnRn : Texto encriptado.
 **/
-void des::iniciarEncriptacionDES(bitset<64>* textoPlano){
+bitset<64>* des::iniciarEncriptacionDES(bitset<64>* textoPlano){
     vector<bitset<48>*> programaDeLlaves;
     bitset<32>* Ln = new (nothrow)bitset<32>();
     bitset<32>* Rn = new (nothrow)bitset<32>();
@@ -655,4 +657,5 @@ void des::iniciarEncriptacionDES(bitset<64>* textoPlano){
     cout << "El texto encriptado es:" << endl;
     cout << hex << (*LnRn).to_ulong() << endl;
     cout << dec; // Regresamos la impresion a decimal
+    return LnRn;
 }
