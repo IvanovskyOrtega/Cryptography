@@ -22,7 +22,6 @@ vector<bitset<64>*> archivos::leerArchivo(string nombre){
 			while(numeroDeBytesLeidos > 0){
 				if(numeroDeBytesLeidos >= 8){
 					input.read((char*)bytesLeidos, 8);
-					cout << sizeof(bytesLeidos) << endl;
 					binario.reserve(1);
 					binario.push_back(new bitset<64>(*bytesLeidos));
 					bytesLeidos->reset();
@@ -33,7 +32,6 @@ vector<bitset<64>*> archivos::leerArchivo(string nombre){
 					binario.reserve(1);
 					binario.push_back(new bitset<64>(*bytesLeidos));
 					numeroDeBytesLeidos -= 8;
-					cout << *bytesLeidos << endl;
 					bytesLeidos->reset();
 					break;
 				}
