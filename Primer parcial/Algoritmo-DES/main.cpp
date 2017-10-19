@@ -17,6 +17,7 @@ int main (int argc, char* argv[]) {
 			cout << "Se generara el programa de llaves." << endl;
 			programaDeLlaves = generarProgramaDeLlaves();
 			cout << "Se genero el programa de llaves." << endl;
+			cout << "Inicia la encriptacion del archivo..." << endl;
 			for(int i = 0 ; i < (int)bytesLeidos.size()-1 ; i++){
 				aux = iniciarEncriptacionDES(bytesLeidos[i], programaDeLlaves);
 				encriptado.reserve(1);
@@ -26,6 +27,7 @@ int main (int argc, char* argv[]) {
 			encriptado.reserve(1);
 			encriptado.push_back(bytesLeidos[bytesLeidos.size()-1]);
 			escribirArchivo(encriptado,argv[2],tamanio);
+			cout << "Termina la encriptacion del archivo..." << endl;
 		}
 	}
 	else{
