@@ -1,4 +1,3 @@
-#include<iostream>
 #include "bits.hpp"
 
 using namespace std;
@@ -19,6 +18,15 @@ void bits::poner1(uchar *byte, int pos){
 void bits::poner0(uchar *byte, int pos){
     if(consultarBit((*byte),pos)){
         (*byte) ^= (1<<pos);
+    }
+}
+
+void bits::ponerBit(uchar* byte, int bit, int pos){
+    if(bit){
+        poner1(byte,pos);
+    }
+    else{
+        poner0(byte,pos);
     }
 }
 
