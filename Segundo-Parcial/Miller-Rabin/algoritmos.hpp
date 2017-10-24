@@ -21,6 +21,7 @@ namespace algoritmos{
     void imprimirBinario(int entero, std::vector<bool> binario);
     bool millerRabin(int n, int m, int k);
 	bool esPrimo(int n, int iteraciones);
+	void menu(char opcion);
 }
 
 #endif

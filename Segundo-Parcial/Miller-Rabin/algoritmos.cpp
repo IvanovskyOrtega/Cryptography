@@ -7,6 +7,57 @@ namespace algoritmos{
     vector<int> Qn;
 }
 
+void algoritmos::menu(char opcion){
+	int posiblePrimo, iteraciones;
+	int r0, r1, res, potencia;
+	switch(opcion){
+		case '1':
+			cout << "Ingresa r0: ";
+			cin >> r0;
+			cout << "Ingresa r1: ";
+			cin >> r1;
+			res = algoritmoDeEuclides(r0,r1);
+			if(res == 1){
+				char op;
+				cout << "encontrar inverso? (s/n)" << endl;
+				cin >> op;
+				if(op == 's' || op == 'S'){
+					int inverso = encontrarInverso(r0);
+					cout << "El inverso es: " << inverso << endl;
+				}
+				else{
+					cout << "No tiene inverso" << endl;
+				}
+			}
+			break;
+		case '2':
+			int b,c,n;
+			cout << "Ingresa b: ";
+			cin >> b;
+			cout << "Ingresa c: ";
+			cin >> c;
+			cout << "Ingresa n: ";
+			cin >> n;
+			potencia = potenciar(b,c,n);
+			cout << "Resultado: " << potencia << endl;
+			break;
+		case '3':
+			cout << "Ingresa un numero n: ";
+			cin >> posiblePrimo;
+			cout << "Ingresa el numero de iteraciones del algoritmo: ";
+			cin >> iteraciones;
+			if(esPrimo(posiblePrimo,iteraciones)){
+				cout << posiblePrimo << " es primo" << endl;
+			}
+			else{
+				cout << posiblePrimo << " no es primo" << endl;
+			}
+			break;
+		default:
+			cout << "Opcion invalida" << endl;
+	}
+}
+
 bool algoritmos::esPrimo(int n, int iteraciones) {
 	if (n <= 1 || n == 4) {
 		return false;
