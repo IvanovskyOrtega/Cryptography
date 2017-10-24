@@ -1,10 +1,15 @@
 #ifndef _DES_HPP_
 #define _DES_HPP_
 
-#include <bitset>
+#include <iostream>
+#include <cstdio>
+#include <fstream>
 #include <vector>
 #include <string>
 #include "bits.hpp"
+#include <cstdlib>
+
+#define MASTER_KEY "mk.txt"
 
 typedef unsigned char uchar;
 
@@ -24,6 +29,8 @@ namespace des{
     extern int permutacionPC1[56];
     extern int permutacionPC2[48];
     extern int tablaDeCorrimientos[16];
+    extern int binario;
+    void error(std::string error);
     int bitPos(int valor);
     int numeroDeByte(int valor);
     uchar* aplicarPermutacionInicial(uchar* textoPlano);
@@ -38,6 +45,26 @@ namespace des{
     int obtenerColumna(uchar bloque);
     int obtenerValorDeCaja(int numeroDeBloque, int renglon, int columna);
     uchar* aplicarCajas(uchar* texto);
+    void rellenarTextoDeSalida(uchar* textoDeSalida, int* valoresDeCaja);
+    uchar* aplicarPermutacionP(uchar* texto);
+    uchar* leerLlaveMaestra();
+    bool esHexa(char c);
+    int getHexa(char c);
+    bool esBinario(char c);
+    void leerLlaveBinaria(uchar* llave, std::string cadenaLlave);
+    void leerLlaveHexadecimal(uchar* llave, std::string cadenaLlave);
+    void leerLlaveASCII(uchar* llave, std::string cadenaLlave);
+    uchar* aplicarPermutacionPC1(uchar* texto);
+    uchar* obtenerCn(uchar* CnDn);
+    uchar* obtenerDn(uchar* CnDn);
+    uchar* aplicarCorrimientoCircular(uchar* texto, int numeroDeCorrimientos);
+    uchar* aplicarUnCorrimiento(uchar* texto);
+    uchar* aplicarDosCorrimientos(uchar* texto);
+    uchar* concatenarCnDn(uchar* Cn, uchar* Dn);
+    uchar* aplicarPermutacionPC2(uchar* CnDn);
+    std::vector<uchar*> generarProgramaDeLlaves();
+    uchar* iniciarEncriptacionDES(uchar* textoPlano, std::vector<uchar*> programaDeLlaves);
+    void imprimir(uchar* array, int size, std::string cad);
 }
 
 #endif
