@@ -1,5 +1,3 @@
-#include <iostream>
-#include <fstream>
 #include "des.hpp"
 
 using namespace std;
@@ -11,6 +9,7 @@ using namespace bits;
     de permutacion propuestas en el algoritmo DES.
 **/
 namespace des{
+    int binario;
     int permutacionInicial[64] = {
         58, 50, 42, 34, 26, 18, 10, 2,
         60, 52, 44, 36, 28, 20, 12, 4,
@@ -137,7 +136,6 @@ namespace des{
 
 uchar* des::aplicarPermutacionInicial(uchar* textoPlano){
     uchar* textoPlanoAuxiliar = new uchar[8];
-    inicializarBytes(textoPlanoAuxiliar,8);
     int k = 0;
     int bit;
     for(int i = 0 ; i < 8 ; i++){
@@ -262,7 +260,6 @@ int des::bitPos(int valor){
 
 uchar* des::aplicarPermutacionInicialInversa(uchar* textoPlano){
     uchar* textoPlanoAuxiliar = new uchar[8];
-    inicializarBytes(textoPlanoAuxiliar,8);
     int k = 0;
     int bit;
     for(int i = 0 ; i < 8 ; i++){
@@ -297,17 +294,16 @@ uchar* des::obtenerRn(uchar* texto){
 uchar* des::concatenarLnRn(uchar* Ln, uchar* Rn){
     uchar* LnRn = new uchar[8];
     for(int i = 0; i < 4 ; i++){
-        Rn[i] = Ln[i];
+        LnRn[i] = Ln[i];
     }
     for(int i = 4; i < 8 ; i++){
-        Rn[i] = Rn[i-4];
+        LnRn[i] = Rn[i-4];
     }
     return LnRn;
 }
 
 uchar* des::aplicarExpansion(uchar* texto){
     uchar* expansion = new uchar[6];
-    inicializarBytes(expansion,6);
     int k = 0;
     int bit;
     for(int i = 0 ; i < 6 ; i++){
@@ -332,24 +328,18 @@ uchar* des::aplicarXORConLlave(uchar* texto, uchar* llave){
 }
 
 uchar* des::obtenerBloques(uchar* texto){
-    //00110101|11100111|10010101|11110000|00111100|01110010
-    //001101|011110|011110|010101|111100|000011|110001|110010
     uchar* bloques = new uchar[8];
     bloques[0] = texto[0]>>2;
-    bloques[1] = (texto[0]<<4)^(texto[1]>>4);
-    poner0(&bloques[1],7);
-    poner0(&bloques[1],6);
-    bloques[2] = (texto[1]<<2)^(texto[1]>>6);
-    poner0(&bloques[2],7);
-    poner0(&bloques[2],6);
-    bloques[3] = texto[3];
+    bloques[1] = ((texto[0]<<6)>>2)^(texto[1]>>4);
+    bloques[2] = ((texto[1]<<4)>>2)^(texto[2]>>6);
+    bloques[3] = texto[2];
     poner0(&bloques[3],7);
     poner0(&bloques[3],6);
-    bloques[4] = texto[4]>>2;
-    bloques[5] = (texto[3]<<4)^(texto[4]>>4);
+    bloques[4] = texto[3]>>2;
+    bloques[5] = ((texto[3]<<6)>>2)^(texto[4]>>4);
     poner0(&bloques[5],7);
     poner0(&bloques[5],6);
-    bloques[6] = (texto[4]<<2)^(texto[5]>>6);
+    bloques[6] = ((texto[4]<<4)>>2)^(texto[5]>>6);
     poner0(&bloques[6],7);
     poner0(&bloques[6],6);
     bloques[7] = texto[5];
@@ -402,7 +392,6 @@ uchar* des::aplicarCajas(uchar* texto){
     int* valoresDeCaja = new int[8];
     uchar* bloques = obtenerBloques(texto);
     uchar* textoDeSalida = new uchar[4];
-    inicializarBytes(textoDeSalida,4);
     for(int i = 0 ; i < 8 ; i++){
         //cout << "Analizando bloque " << i << ": " << bloques[i] << endl;
         renglon = obtenerRenglon(bloques[i]);
@@ -412,5 +401,370 @@ uchar* des::aplicarCajas(uchar* texto){
         //cout << "Valor de caja: "<< valorDeCaja << endl;
     }
     //cout << "Cajas: " << (*textoDeSalida) << endl;
+    rellenarTextoDeSalida(textoDeSalida,valoresDeCaja);
     return textoDeSalida;
+}
+
+void des::rellenarTextoDeSalida(uchar* textoDeSalida, int* valoresDeCaja){
+    textoDeSalida[0] = (valoresDeCaja[0]<<4)^(valoresDeCaja[1]);
+    textoDeSalida[1] = (valoresDeCaja[2]<<4)^(valoresDeCaja[3]);
+    textoDeSalida[2] = (valoresDeCaja[4]<<4)^(valoresDeCaja[5]);
+    textoDeSalida[3] = (valoresDeCaja[6]<<4)^(valoresDeCaja[7]);
+}
+
+uchar* des::aplicarPermutacionP(uchar* texto){
+    uchar* textoPermutado = new uchar[6];
+    int k = 0;
+    int bit;
+    for(int i = 0 ; i < 6 ; i++){
+        for(int j = 7 ; j >= 0 ; j--){
+            bit = permutacionP[k];
+            if(consultarBit(texto[numeroDeByte(bit)],bitPos(bit)))
+                poner1(&textoPermutado[i],j);
+            else
+                poner0(&textoPermutado[i],j); 
+            k++; 
+        }
+    }
+    return textoPermutado;
+}
+
+uchar* aplicarXORLmRn(uchar* Lm, uchar* Rn){
+    uchar* resultado = new uchar[4];
+    resultado[0] = Lm[0]^Rn[0];
+    resultado[1] = Lm[1]^Rn[1];
+    resultado[2] = Lm[2]^Rn[2];
+    resultado[3] = Lm[3]^Rn[3];
+    return resultado;
+}
+
+uchar* des::leerLlaveMaestra(){
+    string cadenaLlave;
+    uchar* llaveMaestra = new uchar[8];
+    ifstream llave(MASTER_KEY);
+    if(llave.is_open()){
+        getline(llave,cadenaLlave);
+        llave.close();
+        int tamanioLlave = cadenaLlave.size();
+        if(tamanioLlave == 64){
+            leerLlaveBinaria(llaveMaestra,cadenaLlave);
+        }
+        else if(tamanioLlave == 16){
+            leerLlaveHexadecimal(llaveMaestra,cadenaLlave);
+        }
+        else if(tamanioLlave == 8){
+            leerLlaveASCII(llaveMaestra,cadenaLlave);
+        }
+        else{
+            error("Formato de llave invalido");
+        }
+        return llaveMaestra;
+    }
+    else{
+        error("No se pudo leer el archivo");
+        exit(0);
+    }
+}
+
+void des::error(string error){
+    cout << "Error: " << error << endl;
+}
+
+bool des::esHexa(char c){
+    switch(c){
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':  
+            return true;
+        default:
+            return false;
+    }
+}
+
+bool des::esBinario(char c){
+    if(c == '0'){
+        binario = 0;
+        return true;
+    }
+    else if(c == '1'){
+        binario = 1;
+        return true;
+    }
+    return false;
+}
+
+void des::leerLlaveBinaria(uchar* llave, string cadenaLlave){
+    int k = 7;
+    int pos = 0;
+    inicializarBytes(llave,8);
+    for(int i = 0 ; i < 64 ; i++){
+        if(!esBinario(cadenaLlave[i])){
+            error("Formato de Llave binaria invalido");
+            exit(0);
+        } 
+    }
+    for(int i = 0 ; i < 8 ; i++){
+        for(int j = 7 ; j >= 0 ; j--){
+            llave[i] = llave[i]^binario<<k;
+            k--;
+            pos++; 
+        }
+        k = 7;
+    }
+}
+
+int des::getHexa(char c){
+    switch(c){
+        case '0': return 0;
+        case '1': return 1;
+        case '2': return 2;
+        case '3': return 3;
+        case '4': return 4;
+        case '5': return 5;
+        case '6': return 6;
+        case '7': return 7;
+        case '8': return 8;
+        case '9': return 9;
+        case 'a': return 10;
+        case 'b': return 11;
+        case 'c': return 12;
+        case 'd': return 13;
+        case 'e': return 14;
+        case 'f': return 15;
+        default: return -1;
+    }
+}
+
+void des::leerLlaveHexadecimal(uchar* llave, string cadenaLlave){
+    inicializarBytes(llave,8);
+    for(int i = 0 ; i < 16 ; i++){
+        if(!esHexa(cadenaLlave[i])){
+            error("Formato de llave hexadecimal invalido");
+            exit(0);
+        }
+    }
+    llave[0] = (getHexa(cadenaLlave[0])<<4)^(getHexa(cadenaLlave[1]));
+    llave[1] = (getHexa(cadenaLlave[2])<<4)^(getHexa(cadenaLlave[3]));
+    llave[2] = (getHexa(cadenaLlave[4])<<4)^(getHexa(cadenaLlave[5]));
+    llave[3] = (getHexa(cadenaLlave[6])<<4)^(getHexa(cadenaLlave[7]));
+    llave[4] = (getHexa(cadenaLlave[8])<<4)^(getHexa(cadenaLlave[9]));
+    llave[5] = (getHexa(cadenaLlave[10])<<4)^(getHexa(cadenaLlave[11]));
+    llave[6] = (getHexa(cadenaLlave[12])<<4)^(getHexa(cadenaLlave[13]));
+    llave[7] = (getHexa(cadenaLlave[14])<<4)^(getHexa(cadenaLlave[15]));
+}
+
+void des::leerLlaveASCII(uchar* llave, string cadenaLlave){
+    inicializarBytes(llave,8);
+    llave[0] = cadenaLlave[0];
+    llave[1] = cadenaLlave[1];
+    llave[2] = cadenaLlave[2];
+    llave[3] = cadenaLlave[3];
+    llave[4] = cadenaLlave[4];
+    llave[5] = cadenaLlave[5];
+    llave[6] = cadenaLlave[6];
+    llave[7] = cadenaLlave[7];
+}
+
+uchar* des::aplicarPermutacionPC1(uchar* texto){
+    uchar* textoPermutado = new uchar[7];
+    int k = 0;
+    int bit;
+    for(int i = 0 ; i < 7 ; i++){
+        for(int j = 7 ; j >= 0 ; j--){
+            bit = permutacionPC1[k];
+            if(consultarBit(texto[numeroDeByte(bit)],bitPos(bit)))
+                poner1(&textoPermutado[i],j);
+            else
+                poner0(&textoPermutado[i],j); 
+            k++; 
+        }
+    }
+    return textoPermutado;
+}
+
+uchar* des::obtenerCn(uchar* CnDn){
+    uchar* Cn = new uchar[4];
+    Cn[3] = (CnDn[3]>>4)^(CnDn[2]<<4);
+    Cn[2] = (CnDn[2]>>4)^(CnDn[1]<<4);
+    Cn[1] = (CnDn[1]>>4)^(CnDn[0]<<4);
+    Cn[0] = CnDn[0]>>4;
+    return Cn;
+}
+uchar* des::obtenerDn(uchar* CnDn){
+    uchar* Dn = new uchar[4];
+    Dn[0] = CnDn[3]<<4;
+    Dn[0] = Dn[0]>>4;
+    Dn[1] = CnDn[4];
+    Dn[2] = CnDn[5];
+    Dn[3] = CnDn[6];
+    return Dn;
+}
+
+uchar* des::aplicarCorrimientoCircular(uchar* texto, int numeroDeCorrimientos){
+    uchar* resultado;
+    if(numeroDeCorrimientos == 1)
+        resultado = aplicarUnCorrimiento(texto);
+    else
+        resultado = aplicarDosCorrimientos(texto);
+    return resultado;
+}
+
+uchar* des::aplicarUnCorrimiento(uchar* texto){
+    uchar* resultado = new uchar[4];
+    int bit;
+    resultado[3] = texto[3]<<1;
+    resultado[2] = texto[2]<<1;
+    bit = consultarBit(texto[3],7);
+    ponerBit(&resultado[2],bit,0);
+    resultado[1] = texto[1]<<1;
+    bit = consultarBit(texto[2],7);
+    ponerBit(&resultado[1],bit,0);
+    resultado[0] = texto[0]<<1;
+    poner0(&resultado[0],4);
+    bit = consultarBit(texto[1],7);
+    ponerBit(&resultado[0],bit,0);
+    bit = consultarBit(texto[0],3);
+    ponerBit(&resultado[3],bit,0);
+    return resultado;
+}
+
+uchar* des::aplicarDosCorrimientos(uchar* texto){
+    uchar* resultado = new uchar[4];
+    int bit;
+    resultado[3] = texto[3]<<2;
+    resultado[2] = texto[2]<<2;
+    bit = consultarBit(texto[3],7);
+    ponerBit(&resultado[2],bit,1);
+    bit = consultarBit(texto[3],6);
+    ponerBit(&resultado[2],bit,0);
+    resultado[1] = texto[1]<<2;
+    bit = consultarBit(texto[2],7);
+    ponerBit(&resultado[1],bit,1);
+    bit = consultarBit(texto[2],6);
+    ponerBit(&resultado[1],bit,0);
+    resultado[0] = texto[0]<<2;
+    poner0(&resultado[0],5);
+    poner0(&resultado[0],4);
+    bit = consultarBit(texto[1],7);
+    ponerBit(&resultado[0],bit,1);
+    bit = consultarBit(texto[1],6);
+    ponerBit(&resultado[0],bit,0);
+    bit = consultarBit(texto[0],3);
+    ponerBit(&resultado[3],bit,1);
+    bit = consultarBit(texto[0],2);
+    ponerBit(&resultado[3],bit,0);
+    return resultado;
+}
+
+uchar* des::concatenarCnDn(uchar* Cn, uchar* Dn){
+    uchar* CnDn = new uchar[7];
+    CnDn[6] = Dn[3];
+    CnDn[5] = Dn[2];
+    CnDn[4] = Dn[1];
+    CnDn[3] = Dn[0]^(Cn[3]<<4);
+    CnDn[2] = (Cn[3]>>4)^(Cn[2]<<4);
+    CnDn[1] = (Cn[2]>>4)^(Cn[1]<<4);
+    CnDn[0] = (Cn[1]>>4)^(Cn[0]<<4);
+    return CnDn;
+}
+
+uchar* des::aplicarPermutacionPC2(uchar* CnDn){
+    uchar* llaveDelPrograma = new uchar[6];
+    int k = 0;
+    int bit; 
+    for(int i = 0 ; i < 6 ; i++){
+        for(int j = 7 ; j >= 0 ; j--){
+            bit = permutacionPC2[k];
+            if(consultarBit(CnDn[numeroDeByte(bit)],bitPos(bit)))
+                poner1(&llaveDelPrograma[i],j);
+            else
+                poner0(&llaveDelPrograma[i],j); 
+            k++; 
+        }
+    }
+    return llaveDelPrograma;
+}
+
+vector<uchar*> des::generarProgramaDeLlaves(){
+    vector<uchar*> programaDeLlaves;
+    uchar* llaveMaestra = new uchar[8];
+    uchar* CnDn = new uchar[7];
+    uchar* llave = new uchar[6];
+    uchar* Cn = new uchar[4];
+    uchar* Dn = new uchar[4];
+    inicializarBytes(llaveMaestra,8);
+    inicializarBytes(CnDn,7);
+    inicializarBytes(llave,6);
+    inicializarBytes(Cn,4);
+    inicializarBytes(Dn,4);
+    llaveMaestra = leerLlaveMaestra();
+    cout << "Se ha leido la llave" << endl;
+    CnDn = aplicarPermutacionPC1(llaveMaestra);
+    Cn = obtenerCn(CnDn);
+    Dn = obtenerDn(CnDn);
+    programaDeLlaves.reserve(16);
+    for(int i = 0 ; i < 16 ; i++){
+        Cn = aplicarCorrimientoCircular(Cn,tablaDeCorrimientos[i]);
+        Dn = aplicarCorrimientoCircular(Dn,tablaDeCorrimientos[i]);
+        CnDn = concatenarCnDn(Cn,Dn);
+        llave = aplicarPermutacionPC2(CnDn);
+        programaDeLlaves.push_back(llave);
+    }
+    return programaDeLlaves;
+}
+
+void des::imprimir(uchar* array, int size, string cad){
+    cout << cad;
+    for (int i = 0 ; i < size ; i++){
+        cout << (int)array[i] << "|";
+    }
+    cout << endl;
+}
+
+uchar* des::iniciarEncriptacionDES(uchar* textoPlano, vector<uchar*> programaDeLlaves){
+    uchar* Ln = new uchar[4];
+    uchar* Rn = new uchar[4];
+    uchar* RnAux = new uchar[4];
+    uchar* LnRn = new uchar[8];
+    uchar* aux = new uchar[6];
+    inicializarBytes(Ln,4);
+    inicializarBytes(Rn,4);
+    inicializarBytes(RnAux,4);
+    inicializarBytes(LnRn,8);
+    inicializarBytes(aux,6);
+    textoPlano = aplicarPermutacionInicial(textoPlano);
+    //cout << "Inicia la encriptacion..." << endl;
+    Ln = obtenerLn(textoPlano);
+    Rn = obtenerRn(textoPlano);
+    for(int i = 0 ; i < 16 ; i++){
+        aux = aplicarExpansion(Rn);
+        aux = aplicarXORConLlave(aux,programaDeLlaves[i]);
+        RnAux = aplicarCajas(aux);
+        RnAux = aplicarPermutacionP(RnAux);
+        RnAux = aplicarXORLmRn(Ln,RnAux);
+        Ln = Rn;;
+        Rn = RnAux;
+    }
+    LnRn = concatenarLnRn(Rn,Ln);
+    LnRn = aplicarPermutacionInicialInversa(LnRn);
+    /*cout << "Termino la encriptacion..." << endl;
+    cout << "El texto encriptado es:" << endl;
+    for(int l = 0 ; l < 8 ; l++)
+        imprimirByte(LnRn[l]);
+    cout << endl;
+    cout << dec; // Regresamos la impresion a decimal*/
+    return LnRn;
 }
