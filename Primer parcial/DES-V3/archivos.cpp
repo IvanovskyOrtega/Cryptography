@@ -86,3 +86,31 @@ void archivos::escribirBytes(ofstream* archivo, vector<uchar*> bytes, int numero
 		exit(0);
 	}
 }
+
+void archivos::escribirBytesU64(ofstream* archivo, u64* bytes){
+	try{
+		if(archivo->good()){
+			archivo->write((const char*)bytes, 8);
+		}
+		else{
+			cout << "Error durante la escritura" << endl;
+			exit(0);
+		}
+	}catch(const std::invalid_argument& ia){
+		cerr << "Invalid argument: " << ia.what() << '\n';
+		exit(0);
+	}
+}
+
+u64 archivos::uchar_to_u64(uchar* bytes){
+	u64 textoPlano = 0x0000000000000000;
+	textoPlano ^= (u64)bytes[0]<<56;
+	textoPlano ^= (u64)bytes[1]<<48;
+	textoPlano ^= (u64)bytes[2]<<40;
+	textoPlano ^= (u64)bytes[3]<<32;
+	textoPlano ^= (u64)bytes[4]<<24;
+	textoPlano ^= (u64)bytes[5]<<16;
+	textoPlano ^= (u64)bytes[6]<<8;
+	textoPlano ^= (u64)bytes[7];
+	return textoPlano;
+}
