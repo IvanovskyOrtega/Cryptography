@@ -12,6 +12,7 @@ namespace bits{
     void ponerBit(u64* byte, int bit, int pos);
     int consultarBit(u64 byte, int pos);
     void imprimiru64(u64 byte);
+    void imprimiru32(u32 byte);
 }
 
 #endif
