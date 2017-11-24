@@ -4,23 +4,21 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
-#include <bitset>
-#include <iomanip>
-#include <locale>
 #include <ctime>
 #include <cstdlib>
 
-typedef unsigned long long int ull;
+typedef unsigned long long ull;
+typedef long long ll;
 
 namespace algoritmos{
-    extern std::vector<int> Qn;
-    int algoritmoDeEuclides(int r0, int r1 );
-    int encontrarInverso(int r0);
-    int potenciar(int b, int c, int n);
-    void intToBinary(int entero, std::vector<bool> *entero_binario);
-    void imprimirBinario(int entero, std::vector<bool> binario);
-    bool millerRabin(int n, int m, int k);
-	bool esPrimo(int n, int iteraciones);
+	extern std::vector<ll> Qn;
+	ll algoritmoDeEuclides(ll r0, ll r1 );
+	ll encontrarInverso(ll r0);
+	ll potenciar(ll b, ll c, ll n);
+	void llToBinary(ll entero, std::vector<bool> *entero_binario);
+	void imprimirBinario(ll entero, std::vector<bool> binario);
+	bool millerRabin(ll n, ll m, ll k);
+	bool esPrimo(ll n, ll iteraciones);
 	void menu(char opcion);
 }
 
