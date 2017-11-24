@@ -4,12 +4,12 @@ using namespace algoritmos;
 using namespace std;
 
 namespace algoritmos{
-    vector<int> Qn;
+    vector<ll> Qn;
 }
 
 void algoritmos::menu(char opcion){
-	int posiblePrimo, iteraciones;
-	int r0, r1, res, potencia;
+	ll posiblePrimo, iteraciones;
+	ll r0, r1, res, potencia;
 	switch(opcion){
 		case '1':
 			cout << "Ingresa r0: ";
@@ -22,16 +22,20 @@ void algoritmos::menu(char opcion){
 				cout << "encontrar inverso? (s/n)" << endl;
 				cin >> op;
 				if(op == 's' || op == 'S'){
-					int inverso = encontrarInverso(r0);
+					ll inverso = encontrarInverso(r0);
 					cout << "El inverso es: " << inverso << endl;
 				}
 				else{
-					cout << "No tiene inverso" << endl;
+					Qn.clear();
 				}
+			}
+			else{
+				Qn.clear();
+				cout << "No tiene inverso" << endl;
 			}
 			break;
 		case '2':
-			int b,c,n;
+			ll b,c,n;
 			cout << "Ingresa b: ";
 			cin >> b;
 			cout << "Ingresa c: ";
@@ -58,20 +62,20 @@ void algoritmos::menu(char opcion){
 	}
 }
 
-bool algoritmos::esPrimo(int n, int iteraciones) {
+bool algoritmos::esPrimo(ll n, ll iteraciones) {
 	if (n <= 1 || n == 4) {
 		return false;
 	}
 	if (n <= 3) {
 		return true;
 	}
-	int k = 0;
-	int m = n - 1;
+	ll k = 0;
+	ll m = n - 1;
 	while (m % 2 == 0) {
 		k++;
 		m /= 2;
 	}
-	for (int i = 0; i < iteraciones; i++) {
+	for (ll i = 0; i < iteraciones; i++) {
 		if (millerRabin(n,m,k) == false) {
 			return false;
 		}
@@ -79,15 +83,15 @@ bool algoritmos::esPrimo(int n, int iteraciones) {
 	return true;
 }
 
-bool algoritmos::millerRabin(int n, int m, int k){
-    int b;
-    int a;
+bool algoritmos::millerRabin(ll n, ll m, ll k){
+    ll b;
+    ll a;
 	a = 2 + rand() % (n - 4);
 	b = potenciar(a,m,n);
 	if (b == 1 || b == (n-1)) {
 		return true;
 	}
-	for (int i = 0; i < k; i++) {
+	for (ll i = 0; i < k; i++) {
 		b = potenciar(b, 2, n);
 		if (b == (n - 1)) {
 			return true;
@@ -99,25 +103,25 @@ bool algoritmos::millerRabin(int n, int m, int k){
     return false;
 }
 
-int algoritmos::potenciar(int b, int c, int n){
-	int l;
-	int z = 1;
+ll algoritmos::potenciar(ll b, ll c, ll n){
+	ll l;
+	ull z = 1;
     vector<bool> c_binario;
-    intToBinary(c, &c_binario);
+    llToBinary(c, &c_binario);
     //imprimirBinario(c,c_binario);
 	l = c_binario.size();
-	for (int i = l - 1 ; i >= 0 ; i--) {
+	for (ll i = l - 1 ; i >= 0 ; i--) {
 		z = (z*z) % n;
 		if (c_binario[i]) {
 			z = (b*z) % n;
 		}
 	}
-	return z;
+	return (ll)z;
 }
 
-void algoritmos::intToBinary(int entero, vector<bool> *entero_binario){
-    int tamanio = 0;
-    int i = 1;
+void algoritmos::llToBinary(ll entero, vector<bool> *entero_binario){
+    ll tamanio = 0;
+    ll i = 1;
     while (i<entero){
         tamanio++;
         i*=2;
@@ -134,19 +138,19 @@ void algoritmos::intToBinary(int entero, vector<bool> *entero_binario){
     }
  }
 
- void algoritmos::imprimirBinario(int entero, vector<bool> binario){
+ void algoritmos::imprimirBinario(ll entero, vector<bool> binario){
 	cout << "El binario de " << entero << " es: ";
-    for(int i = (int)binario.size()-1 ; i >= 0 ; i--){
+    for(ll i = (ll)binario.size()-1 ; i >= 0 ; i--){
         cout << binario[i];
     }
     cout << endl;
  }
 
-int algoritmos::algoritmoDeEuclides(int r0, int r1){
-    int q;
-    int rn = 1;
+ll algoritmos::algoritmoDeEuclides(ll r0, ll r1){
+    ll q;
+    ll rn = 1;
     while(rn != 0){
-        q = r0/ r1;
+        q = r0/r1;
         rn = r0 % r1;
         if(rn != 0){
             cout << r0 << " = (" << q << ")*" << r1 << " + " << rn << endl;
@@ -162,15 +166,15 @@ int algoritmos::algoritmoDeEuclides(int r0, int r1){
     return r0;
 }
 
-int algoritmos::encontrarInverso(int r0){
-    int j = Qn.size();
-    int t0 = 0;
-    int t1 = 1;
-    int tn;
+ll algoritmos::encontrarInverso(ll r0){
+    ll j = Qn.size();
+    ll t0 = 0;
+    ll t1 = 1;
+    ll tn;
 	if (j == 0) {
 		return r0 + 1;
 	}
-    for(int i = 0 ; i < j ; i++){
+    for(ll i = 0 ; i < j ; i++){
         tn = (t0 - Qn[i]*t1);
         if(tn < 0){
             if(abs(tn) > r0){
@@ -193,4 +197,3 @@ int algoritmos::encontrarInverso(int r0){
     }
     return tn;
 }
-
