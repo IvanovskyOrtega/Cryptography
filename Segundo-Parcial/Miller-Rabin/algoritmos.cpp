@@ -5,11 +5,162 @@ using namespace std;
 
 namespace algoritmos{
     vector<ll> Qn;
+	vector<ll*> sumas;  
+}
+
+ll* algoritmos::doblar(ll x0, ll y0, ll x1, ll y1, ll k, ll p){
+	ll *res = (ll*)malloc(2*sizeof(ll));
+	if(x0 == x1){
+		ll inv = 2*y1;
+		if(inv < 0){
+			inv = p - (ll)abs(inv)%p;
+		}
+		inv %= p;
+		if(algoritmoDeEuclides(p,inv) == 1){
+			ll y1_inv = encontrarInverso(p);
+			ll lambda = ((3*x1*x1 + k)*y1_inv);
+			if(lambda < 0){
+				lambda = p - ((ll)abs(lambda)%p);
+			}
+			lambda = lambda % p;
+			res[0] = (lambda*lambda - 2*x1);
+			if(res[0] < 0){
+				res[0] = p - ((ll)abs(res[0])%p);
+			}
+			res[0] = res[0] % p;
+			res[1] = (lambda*(x1 - res[0]) - y1);
+			if(res[1] < 0){
+				res[1] = p - ((ll)abs(res[1])%p);
+			}
+			res[1] = res[1] % p;
+			cout << "res = (" << res[0] << "," << res[1] << ")" << endl;
+		}
+		else{
+			Qn.clear();
+		}
+	}
+	else{
+		ll inv = x1-x0;
+		if(inv < 0){
+			inv = p - (ll)abs(inv)%p;
+		}
+		inv %= p;
+		if(algoritmoDeEuclides(p,inv) == 1){
+			ll inverso = encontrarInverso(p);
+			ll lambda = ((y1-y0)*inverso);
+			if(lambda < 0){
+				lambda = p - ((ll)abs(lambda)%p);
+			}
+			lambda = lambda % p;
+			res[0] = (lambda*lambda - x1 - x0);
+			if(res[0] < 0){
+				res[0] = p - ((ll)abs(res[0])%p);
+			}
+			res[0] = res[0] % p;
+			res[1] = (lambda*(x1 - res[0]) - y1);
+			if(res[1] < 0){
+				res[1] = p - ((ll)abs(res[1])%p);
+			}
+			res[1] = res[1] % p;
+			cout << "res = (" << res[0] << "," << res[1] << ")" << endl;
+		}
+		else{
+			Qn.clear();
+		}
+	}
+	return res;
+}
+
+ll* algoritmos::sumar(ll numSumas, ll x0, ll y0, ll x1, ll y1, ll k, ll p){
+	ll* res = (ll*)malloc(2*sizeof(ll));
+	ll sumaPar = 0;
+    ll i = 1;
+    while (i < numSumas){
+        sumaPar++;
+        i*=2;
+    }
+	sumaPar -= 2;
+	cout << sumaPar << endl;
+	vector<bool> numSumasBinario;
+	llToBinary(numSumas,&numSumasBinario);
+	imprimirBinario(numSumas,numSumasBinario);
+	res = doblar(x0,y0,x1,y1,k,p);
+	sumas.reserve(1);
+	sumas.push_back(res);
+	for(i = 0; i < sumaPar; i++){
+		res = doblar(res[0],res[1],res[0],res[1],k,p);
+		sumas.reserve(1);
+		sumas.push_back(res);
+	}
+	for(i = (ll)numSumasBinario.size()-2; i >= 1 ; i--){
+		if(numSumasBinario[i] == true){
+			res = doblar(res[0], res[1],sumas[i-1][0],sumas[i-1][1],k,p);
+		}
+	}
+	sumas.clear();
+	return res;
+}
+
+void algoritmos::verificarK(ll k, ll p, ll x0, ll y0, ll q){
+	ll c;
+	c = (p - 1) / 2;
+	if(potenciar(k,c,p) == 1){
+		cout << k << " es residuo cuadratico modulo " << p << endl;
+		c = (p - 1) / 4;
+		if(potenciar(k,c,p) != 1){
+			cout << k << " no es potencia cuarta modulo " << p << endl;
+			ll *generador = sumar(q-1,x0, y0, x0, y0, -k, p);
+			cout << "(q-1)*alfa = " << generador[0] << "," << generador[1] << endl;
+		}
+		else{
+			cout << k << " es potencia cuarta modulo " << p << endl;
+			cout << "No se puede seguir" << endl;
+			return;
+		}
+	}
+	else{
+		cout << k << " no es residuo cuadratico modulo " << p << endl;
+		cout << "No se puede seguir" << endl;
+		return;
+	}
+	return;
+}
+
+void algoritmos::curvaEliptica(ll a, ll b){
+	ll p = pow(a,2) + pow(b,2);
+	if(esPrimo(p,20)){
+		cout << "p = " << p << endl;
+		if(((a+b)%4 == 1) && (p%4 == 1)){
+			ll q = (p+1+2*a)/4;
+			if((esPrimo(q,20))){
+				cout << "q = " << q << endl;
+				ll x0,y0,x0_inv;
+				cout << "Ingresa x0, y0:\t";
+				cin >> x0 >> y0;
+				if(algoritmoDeEuclides(p,x0) == 1){
+					x0_inv = encontrarInverso(p); 
+					ll k = ((ll)(pow(x0,3) - pow(y0,2))*x0_inv)%p;
+					cout << "k = " << k << endl;
+					verificarK(k,p,x0,y0,q);
+				}
+			}
+			else{
+				cout << "q no es primo" << endl;
+			}
+		}
+		else{
+			cout << "No se cumplio a+b mod 4 = 1 y p mod 4 = 1" << endl;
+		}
+	}
+	else{
+		cout << "a*a + b*b no s primo" << endl;
+	}
 }
 
 void algoritmos::menu(char opcion){
 	ll posiblePrimo, iteraciones;
-	ll r0, r1, res, potencia;
+	ll r0, r1, res, potencia, a, b, c, n;
+	ll x0, y0, x1, y1, k, p;
 	switch(opcion){
 		case '1':
 			cout << "Ingresa r0: ";
@@ -35,7 +186,6 @@ void algoritmos::menu(char opcion){
 			}
 			break;
 		case '2':
-			ll b,c,n;
 			cout << "Ingresa b: ";
 			cin >> b;
 			cout << "Ingresa c: ";
@@ -56,6 +206,17 @@ void algoritmos::menu(char opcion){
 			else{
 				cout << posiblePrimo << " no es primo" << endl;
 			}
+			break;
+		case '4':
+			cout << "Ingresa a y b:\t";
+			cin >> a >> b;
+			curvaEliptica(a,b);
+			Qn.clear();
+			break;
+		case '5':
+			cout << "Ingresa x0,y0,x1,y1,k,p:\t";
+			cin >> x0 >> y0 >> x1 >> y1 >> k >> p;
+			doblar(x0,y0,x1,y1,k,p);
 			break;
 		default:
 			cout << "Opcion invalida" << endl;
@@ -153,12 +314,12 @@ ll algoritmos::algoritmoDeEuclides(ll r0, ll r1){
         q = r0/r1;
         rn = r0 % r1;
         if(rn != 0){
-            cout << r0 << " = (" << q << ")*" << r1 << " + " << rn << endl;
+            //cout << r0 << " = (" << q << ")*" << r1 << " + " << rn << endl;
             Qn.reserve(1);
             Qn.push_back(q);
         }
         else{
-            cout << r0 << " = (" << q << ")*" << r1 << endl;
+            //cout << r0 << " = (" << q << ")*" << r1 << endl;
         } 
         r0 = r1;
         r1 = rn;
@@ -189,11 +350,12 @@ ll algoritmos::encontrarInverso(ll r0){
             tn = tn % r0;
         }
         else{
-            cout << "0" << endl;
+            //cout << "0" << endl;
         }
         t0 = t1;
         t1 = tn;
-        cout << "t" << i+2 << ": " << tn << endl;
+        //cout << "t" << i+2 << ": " << tn << endl;
     }
+	Qn.clear();
     return tn;
 }
