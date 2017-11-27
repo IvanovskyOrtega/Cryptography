@@ -1,7 +1,5 @@
 #ifndef _ALGORITMOS_HPP_
 #define _ALGORITMOS_HPP_
-#ifndef _ALGORITMOS_HPP_
-#define _ALGORITMOS_HPP_
 
 #include <vector>
 #include <iostream>
