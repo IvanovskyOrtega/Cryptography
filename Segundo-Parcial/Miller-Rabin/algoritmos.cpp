@@ -10,13 +10,19 @@ namespace algoritmos{
 
 ll* algoritmos::doblar(ll x0, ll y0, ll x1, ll y1, ll k, ll p){
 	ll *res = (ll*)malloc(2*sizeof(ll));
-	if(x0 == x1){
+	if(x0 == x1 && y0 == y1){
 		ll inv = 2*y1;
 		if(inv < 0){
 			inv = p - (ll)abs(inv)%p;
 		}
 		inv %= p;
 		if(algoritmoDeEuclides(p,inv) == 1){
+			if(y1 == (p-y0%p)){
+				res[0] = INFINITO;
+				res[1] = INFINITO;
+				cout << "res = (" << res[0] << "," << res[1] << ")" << endl;
+				return res;
+			}
 			ll y1_inv = encontrarInverso(p);
 			ll lambda = ((3*x1*x1 + k)*y1_inv);
 			if(lambda < 0){
@@ -45,6 +51,12 @@ ll* algoritmos::doblar(ll x0, ll y0, ll x1, ll y1, ll k, ll p){
 			inv = p - (ll)abs(inv)%p;
 		}
 		inv %= p;
+		if(inv == 0){
+			res[0] = INFINITO;
+			res[1] = INFINITO;
+			cout << "res = (" << res[0] << "," << res[1] << ")" << endl;
+			return res;
+		}
 		if(algoritmoDeEuclides(p,inv) == 1){
 			ll inverso = encontrarInverso(p);
 			ll lambda = ((y1-y0)*inverso);
@@ -111,6 +123,9 @@ void algoritmos::verificarK(ll k, ll p, ll x0, ll y0, ll q){
 			cout << k << " no es potencia cuarta modulo " << p << endl;
 			ll *generador = sumar(q-1,x0, y0, x0, y0, -k, p);
 			cout << "(q-1)*alfa = " << generador[0] << "," << generador[1] << endl;
+			if(generador[1] == (p-y0%p)){
+				cout << "alfa es generador" << endl;
+			}
 		}
 		else{
 			cout << k << " es potencia cuarta modulo " << p << endl;
@@ -164,10 +179,10 @@ void algoritmos::menu(char opcion){
 	switch(opcion){
 		case '1':
 			cout << "Ingresa r0: ";
-			cin >> r0;
+			cin >> r0;( x_0, y_0 )
 			cout << "Ingresa r1: ";
 			cin >> r1;
-			res = algoritmoDeEuclides(r0,r1);
+			res = algoritmoDeEuclides(r0,r1);( x_0, y_0 )
 			if(res == 1){
 				char op;
 				cout << "encontrar inverso? (s/n)" << endl;
