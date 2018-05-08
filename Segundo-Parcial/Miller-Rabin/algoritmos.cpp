@@ -18,8 +18,8 @@ ll* algoritmos::doblar(ll x0, ll y0, ll x1, ll y1, ll k, ll p){
 		inv %= p;
 		if(algoritmoDeEuclides(p,inv) == 1){
 			if(y1 == (p-y0%p)){
-				res[0] = INFINITO;
-				res[1] = INFINITO;
+				res[0] = 0;
+				res[1] = 0;
 				cout << "res = (" << res[0] << "," << res[1] << ")" << endl;
 				return res;
 			}
@@ -52,8 +52,8 @@ ll* algoritmos::doblar(ll x0, ll y0, ll x1, ll y1, ll k, ll p){
 		}
 		inv %= p;
 		if(inv == 0){
-			res[0] = INFINITO;
-			res[1] = INFINITO;
+			res[0] = 0;
+			res[1] = 0;
 			cout << "res = (" << res[0] << "," << res[1] << ")" << endl;
 			return res;
 		}
@@ -179,10 +179,10 @@ void algoritmos::menu(char opcion){
 	switch(opcion){
 		case '1':
 			cout << "Ingresa r0: ";
-			cin >> r0;( x_0, y_0 )
+			cin >> r0;
 			cout << "Ingresa r1: ";
 			cin >> r1;
-			res = algoritmoDeEuclides(r0,r1);( x_0, y_0 )
+			res = algoritmoDeEuclides(r0,r1);
 			if(res == 1){
 				char op;
 				cout << "encontrar inverso? (s/n)" << endl;
@@ -352,6 +352,7 @@ ll algoritmos::encontrarInverso(ll r0){
 	}
     for(ll i = 0 ; i < j ; i++){
         tn = (t0 - Qn[i]*t1);
+	//cout << "t" << i+1 << " = (" << t0 << " - " << Qn[i] << "*" << t1 << ")" << endl;
         if(tn < 0){
             if(abs(tn) > r0){
                 tn = abs(tn) % r0;
@@ -374,3 +375,4 @@ ll algoritmos::encontrarInverso(ll r0){
 	Qn.clear();
     return tn;
 }
+
